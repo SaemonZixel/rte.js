@@ -1,5 +1,5 @@
 // rte - rich text editor
-// version: 0.5
+// version: 0.5.1
 // Author: Saemon Zixel, 2012-2018, http://saemonzixel.ru/
 // Public Domain. Do with it all you want.
 
@@ -183,14 +183,14 @@ function rte(id, content) {
 		if (ev.ctrlKey || ev.metaKey)
 		switch(key) {
 			case 89: 
-				rte({type:'click', target: {parentNode: rte_root, class: 'rte_panel-btn', style:{backgroundPosition: window.rte_commands['redo']+' 0px'}}});
+				rte({type:'click', target: {parentNode: rte_root, className: 'rte_panel-btn', style:{backgroundPosition: window.rte_commands['redo']+' 0px'}}});
 				cancel_event = true;
 				break;
 			case 90: 
 				if(ev.altKey || ev.shiftKey)
-					rte({type:'click', target: {parentNode: rte_root, class: 'rte_panel-btn', style:{backgroundPosition: window.rte_commands['redo']+' 0px'}}});
+					rte({type:'click', target: {parentNode: rte_root, className: 'rte_panel-btn', style:{backgroundPosition: window.rte_commands['redo']+' 0px'}}});
 				else
-					rte({type:'click', target: {parentNode: rte_root, class: 'rte_panel-btn', style:{backgroundPosition: window.rte_commands['undo']+' 0px'}}});
+					rte({type:'click', target: {parentNode: rte_root, className: 'rte_panel-btn', style:{backgroundPosition: window.rte_commands['undo']+' 0px'}}});
 				cancel_event = true;
 				break;
 			case 17:
@@ -227,7 +227,7 @@ function rte(id, content) {
 	if(ev.type == 'keyup') {
 		var key = ev.keyCode ? ev.keyCode : (ev.which ? ev.which : null);
 // console.log(key);
-		if(key == 8 || key == 46) {
+		if(key == 8 /* BACKSPACE */ || key == 46 /* DELETE */ ) {
 			if(window.getSelection && window.getSelection().rangeCount > 0) { // W3C
 				var rng = window.getSelection().getRangeAt(0)
 				var node = rng.startContainer;
@@ -239,7 +239,8 @@ function rte(id, content) {
 			
 //console.log(node.nodeName);
 			// уберём лишний родительский тег
-			if(node.nodeName != '#text' && node.parentNode != rte_content_area
+			if(node.nodeName != '#text' 
+			&& node.parentNode != rte_content_area && node != rte_content_area
 			&& (!node.firstChild || node.innerHTML.toLowerCase() == '<br>')) {
 				var parent = node.parentNode;
 				while(node.firstChild) parent.appendChild(node.firstChild);
@@ -616,7 +617,7 @@ function rte(id, content) {
 					if(attrs.indexOf(' '+tags[t].toLowerCase()+' ') < 0)
 						result.push(lines[i].replace(/^<([a-zA-Z0-9]+)[^>]+>(.*)$/mg, '<$1>$2'));
 					else
-						result.push(lines[i]); 
+						result.push(lines[i].replace(/ ?style="[^"]+"/mg, '')); 
 					break;
 				default:
 					if(lines[i].match(/^<(td|img)/))
@@ -1145,7 +1146,7 @@ rte.default_config = {
 	height: '15em', 
 	"class": '',
 	toolbar: 'h1 h2 bold italic underline createlink unlink color undo redo insertimage clean html youtube', 
-	onpaste_allow: 'h1 h2 h3 h4 h5 i em span strong b u ul ol li p br img table tbody thead tfoot tr td th iframe object embed param', 
+	onpaste_allow: 'h1 h2 h3 h4 h5 i em span strong b u ul ol li p br a img table tbody thead tfoot tr td th iframe object embed param', 
 	onpaste_allow_attr_in: 'a img td iframe object embed param', 
 	toolbar_btn_png: '/rte.png',
 	upload_image_action: /* undefined, */ '/server_side_api.php?action=upload_file',
